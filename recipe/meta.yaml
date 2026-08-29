@@ -10,9 +10,11 @@ source:
     sha256: 8e1b71e037b524ba3f576babb0cf59182061df1f19cd86112f085a882560f60b
     patches:
       - fix-install.patch
+      # Backport upstream CMake 4 compatibility.
+      - cmake-minimum-version.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [not win or vc<14]
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x') }}
@@ -21,17 +23,37 @@ requirements:
   build:
     - {{ compiler('cxx') }}
     - {{ compiler('c') }}
+    - {{ stdlib('c') }}
     - ninja
     - cmake
 
 test:
+  requires:
+    - {{ compiler('c') }}  # [target_platform == "win-arm64"]
+  files:
+    - lexer.l  # [target_platform == "win-arm64"]
+    - parser.y  # [target_platform == "win-arm64"]
   commands:
     - win_bison.exe --version
     - win_flex.exe --version
+    - win_bison.exe --defines=parser.h --output=parser.c parser.y  # [target_platform == "win-arm64"]
+    - if errorlevel 1 exit 1  # [target_platform == "win-arm64"]
+    - win_flex.exe --outfile=lexer.c lexer.l  # [target_platform == "win-arm64"]
+    - if errorlevel 1 exit 1  # [target_platform == "win-arm64"]
+    - cl.exe /nologo /W3 /Fe:parser_consumer.exe parser.c lexer.c  # [target_platform == "win-arm64"]
+    - if errorlevel 1 exit 1  # [target_platform == "win-arm64"]
+    - echo 20+22| parser_consumer.exe  # [target_platform == "win-arm64"]
+    - if errorlevel 1 exit 1  # [target_platform == "win-arm64"]
+    - dumpbin /headers parser_consumer.exe | findstr /I /C:"AA64 machine (ARM64)"  # [target_platform == "win-arm64"]
+    - if errorlevel 1 exit 1  # [target_platform == "win-arm64"]
+    - dumpbin /headers "%LIBRARY_BIN%\\win_bison.exe" | findstr /I /C:"AA64 machine (ARM64)"  # [target_platform == "win-arm64"]
+    - if errorlevel 1 exit 1  # [target_platform == "win-arm64"]
+    - dumpbin /headers "%LIBRARY_BIN%\\win_flex.exe" | findstr /I /C:"AA64 machine (ARM64)"  # [target_platform == "win-arm64"]
+    - if errorlevel 1 exit 1  # [target_platform == "win-arm64"]
 
 about:
   home: https://github.com/lexxmark/winflexbison
-  license: GPL-3.0
+  license: GPL-3.0-or-later AND BSD-3-Clause
   license_family: GPL
   license_file:
     - bison/src/COPYING

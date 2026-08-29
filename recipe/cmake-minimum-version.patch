@@ -1,0 +1,60 @@
+From f4cd95d8fbe067bde9b7cb530fdc6627e9263aab Mon Sep 17 00:00:00 2001
+From: Andrej730 <azhilenkov@gmail.com>
+Date: Tue, 18 Nov 2025 11:32:20 +0500
+Subject: [PATCH] cmake - bump min required version
+
+Resolves warning:
+```
+CMake Deprecation Warning at common/CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+```
+---
+ CMakeLists.txt        | 2 +-
+ bison/CMakeLists.txt  | 2 +-
+ common/CMakeLists.txt | 2 +-
+ flex/CMakeLists.txt   | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1c9f7e0..183c896 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
++cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+ 
+ project (winflexbison)
+ 
+diff --git a/bison/CMakeLists.txt b/bison/CMakeLists.txt
+index 55de8a1..3ccebb6 100644
+--- a/bison/CMakeLists.txt
++++ b/bison/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
++cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+ 
+ set(PROJECT_NAME win_bison)
+ 
+diff --git a/common/CMakeLists.txt b/common/CMakeLists.txt
+index 4b57c62..9db2ee4 100644
+--- a/common/CMakeLists.txt
++++ b/common/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
++cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+ 
+ set(PROJECT_NAME winflexbison_common)
+ 
+diff --git a/flex/CMakeLists.txt b/flex/CMakeLists.txt
+index f634f81..4530c63 100644
+--- a/flex/CMakeLists.txt
++++ b/flex/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
++cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+ 
+ set(PROJECT_NAME win_flex)
+ 
+-- 
+2.51.0
